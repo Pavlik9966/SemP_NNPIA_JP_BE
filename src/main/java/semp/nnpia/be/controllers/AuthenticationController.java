@@ -1,0 +1,97 @@
+package semp.nnpia.be.controllers;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import semp.nnpia.be.domains.User;
+import semp.nnpia.be.services.JwtUserDetailsService;
+import semp.nnpia.be.services.UserService;
+import semp.nnpia.be.utils.JwtTokenUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RequestMapping("/auth")
+@RestController
+public class AuthenticationController {
+    protected final Log logger = LogFactory.getLog(getClass());
+    @Autowired
+    UserService userService;
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    JwtUserDetailsService jwtUserDetailsService;
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestParam("username") String username, @RequestParam("password") String password) {
+        Map<String, Object> responseMap = new HashMap<>();
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password)
+            );
+            if (auth.isAuthenticated()) {
+                logger.info("Logged In.");
+                UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+                String token = jwtTokenUtil.generateToken(userDetails);
+                responseMap.put("error", false);
+                responseMap.put("message", "Logged In.");
+                responseMap.put("token", token);
+                return ResponseEntity.ok(responseMap);
+            } else {
+                responseMap.put("error", true);
+                responseMap.put("message", "Invalid Credentials.");
+                return ResponseEntity.status(401).body(responseMap);
+            }
+        } catch (DisabledException e) {
+            e.printStackTrace();
+            responseMap.put("error", true);
+            responseMap.put("message", "User is disabled.");
+            return ResponseEntity.status(500).body(responseMap);
+        } catch (BadCredentialsException e) {
+            responseMap.put("error", true);
+            responseMap.put("message", "Invalid Credentials.");
+            return ResponseEntity.status(401).body(responseMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseMap.put("error", true);
+            responseMap.put("message", "Something went wrong.");
+            return ResponseEntity.status(500).body(responseMap);
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody @Validated final User user) {
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        userService.createUser(user);
+        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(user.getUsername());
+        String token = jwtTokenUtil.generateToken(userDetails);
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("error", false);
+        responseMap.put("username", user.getUsername());
+        responseMap.put("message", "Account created successfully.");
+        responseMap.put("token", token);
+        return ResponseEntity.ok(responseMap);
+    }
+
+    @GetMapping("/username")
+    public Map<String, Object> getUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("error", false);
+        userMap.put("username", authentication.getName());
+        return userMap;
+    }
+}
