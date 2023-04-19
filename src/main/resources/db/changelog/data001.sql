@@ -1,5 +1,5 @@
 --changeset db-data
-CREATE TABLE user
+/*CREATE TABLE user
 (
     id            BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (INCREMENT BY 1 START WITH 0),
     username      VARCHAR(256) NOT NULL UNIQUE,
@@ -50,4 +50,4 @@ VALUES (1, 1);
 
 -- Assign "Guest" role to user with id = 2
 INSERT INTO user_role (user_id, role_id)
-VALUES (2, 2);
+VALUES (2, 2);*/
