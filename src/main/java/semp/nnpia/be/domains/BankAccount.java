@@ -20,7 +20,7 @@ public class BankAccount {
     private Long id;
 
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private User user;
 
@@ -31,7 +31,7 @@ public class BankAccount {
     private String accountNumber;
 
     @JoinColumn(name = "account_type_id", referencedColumnName = "account_type_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private AccountType accountType;
 
@@ -40,7 +40,7 @@ public class BankAccount {
     private Double balance = 0.0;
 
     @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private Currency currency;
 
