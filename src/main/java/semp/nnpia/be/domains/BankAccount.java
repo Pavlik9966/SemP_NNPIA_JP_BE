@@ -30,19 +30,19 @@ public class BankAccount {
     @Size(max = 50)
     private String accountNumber;
 
-    @JoinColumn(name = "account_type_id", referencedColumnName = "account_type_id")
+    /*@JoinColumn(name = "account_type_id", referencedColumnName = "account_type_id")
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
-    private AccountType accountType;
+    private AccountType accountType;*/
 
     @Column(name = "balance")
     @NotNull
     private Double balance = 0.0;
 
-    @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
+    /*@JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
-    private Currency currency;
+    private Currency currency;*/
 
     @Column(name = "created_at")
     @NotNull

@@ -1,4 +1,4 @@
---changeset db-data
+--changeset db-data:1
 /*CREATE TABLE user
 (
     id            BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (INCREMENT BY 1 START WITH 0),

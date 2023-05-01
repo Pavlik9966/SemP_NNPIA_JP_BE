@@ -5,9 +5,11 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:9966/semp
+    url: jdbc:postgresql://localhost:9966/sempdb
     username: admin
     password: admin321
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
