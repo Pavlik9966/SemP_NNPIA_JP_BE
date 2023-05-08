@@ -108,7 +108,8 @@ VALUES ('lgarcia', 'qwerty', 'Lisa', 'Garcia', '1993-02-28', '+33 7 65 43 21 98'
 INSERT INTO users (username, password, name, surname, date_of_birth, phone, email, address_id)
 VALUES ('dbrown', 'letmein', 'David', 'Brown', '1996-07-07', '+33 6 54 32 10 98', 'dbrown@example.com', 2);
 INSERT INTO users (username, password, name, surname, date_of_birth, phone, email, address_id)
-VALUES ('pnovak', 'heslo123', 'Pavel', 'Novák', '1995-03-21', '+420 777 888 999', 'pavel.novak@gmail.com', 3);
+VALUES ('pnovak', '$2a$10$vb5ruqMLx8iIZrYuvsXNZusUZRh8yTgXPR.iiTF0aqhL4V5Bs3h9i', 'Pavel', 'Novák', '1995-03-21',
+        '+420 777 888 999', 'pavel.novak@gmail.com', 3); /* heslo123 */
 INSERT INTO users (username, password, name, surname, date_of_birth, phone, email, address_id)
 VALUES ('jsvobodova', 'heslo456', 'Jana', 'Svobodová', '1990-05-12', '+420 604 555 222', 'jana.svobodova@gmail.com', 4);
 INSERT INTO users (username, password, name, surname, date_of_birth, phone, email, address_id)
