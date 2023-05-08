@@ -1,5 +1,6 @@
 package semp.nnpia.be.domains;
 
+/*
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +33,4 @@ public class CardType {
     public CardType(String cardType) {
         this.cardType = cardType;
     }
-}
+}*/

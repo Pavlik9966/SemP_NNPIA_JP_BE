@@ -19,7 +19,7 @@ CREATE TABLE users
 (
     user_id       SERIAL PRIMARY KEY,
     username      VARCHAR(256) UNIQUE NOT NULL,
-    password      VARCHAR(50)         NOT NULL,
+    password      VARCHAR(256)        NOT NULL,
     name          VARCHAR(256)        NOT NULL,
     surname       VARCHAR(256)        NOT NULL,
     date_of_birth DATE                NOT NULL,

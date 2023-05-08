@@ -1,5 +1,6 @@
 package semp.nnpia.be.domains;
 
+/*
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -66,4 +67,4 @@ public class CreditCard {
         this.balance = balance;
         this.createdAt = createdAt;
     }
-}
+}*/

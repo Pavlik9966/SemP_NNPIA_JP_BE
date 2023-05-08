@@ -31,7 +31,7 @@ public class User {
     @Column(name = "password")
     @NotBlank
     @NotNull
-    @Size(max = 50)
+    @Size(max = 256)
     private String password;
 
     @Column(name = "name")

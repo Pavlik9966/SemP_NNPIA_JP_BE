@@ -94,4 +94,12 @@ public class AuthenticationController {
         userMap.put("username", authentication.getName());
         return userMap;
     }
+
+    @GetMapping("/password/{password}")
+    public ResponseEntity<?> password(@PathVariable String password) {
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("original", password);
+        responseMap.put("password", new BCryptPasswordEncoder().encode(password));
+        return ResponseEntity.ok(responseMap);
+    }
 }

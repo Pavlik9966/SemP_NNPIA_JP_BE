@@ -1,5 +1,6 @@
 package semp.nnpia.be.domains;
 
+/*
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -48,4 +49,4 @@ public class Currency {
         this.name = name;
         this.symbol = symbol;
     }
-}
+}*/
