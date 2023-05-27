@@ -54,7 +54,7 @@ public class BankAccountController {
         return new Transaction(
                 userService.getUserById(dto.getSenderId()),
                 bankAccountService.getAccountByAccountNumber(dto.getAccountNumberRecipient()),
-                bankAccountService.getAccountById(dto.getSenderId()),
+                bankAccountService.getAccountById(dto.getAccountIdSender()),
                 dto.getTransactionDate(),
                 dto.getAmount(),
                 dto.getCreatedAt(),

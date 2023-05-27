@@ -31,6 +31,11 @@ public class State {
     @Size(max = 8)
     private String shortcut;
 
+    public State(String name, String shortcut) {
+        this.name = name;
+        this.shortcut = shortcut;
+    }
+
     public StateOutputDto toDto() {
         return new StateOutputDto(
                 getName(),

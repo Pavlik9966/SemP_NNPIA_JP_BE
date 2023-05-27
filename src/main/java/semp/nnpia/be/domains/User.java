@@ -75,6 +75,18 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private Set<Role> roles = new HashSet<>();
 
+    public User(String username, String password, String name, String surname, LocalDate dateOfBirth, String phone, String email, Address address, LocalDateTime createdAt) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+        this.dateOfBirth = dateOfBirth;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.createdAt = createdAt;
+    }
+
     public UserOutputDto toUserOutputDto() {
         return new UserOutputDto(
                 getId(),
