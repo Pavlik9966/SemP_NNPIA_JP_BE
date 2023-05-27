@@ -36,7 +36,9 @@ public class AuthenticationController {
     JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestParam("username") String username, @RequestParam("password") String password) {
+    public ResponseEntity<?> loginUser(@Validated @RequestBody Map<String, Object> payload) {
+        String username = (String) payload.get("username");
+        String password = (String) payload.get("password");
         Map<String, Object> responseMap = new HashMap<>();
         try {
             Authentication auth = authenticationManager.authenticate(
@@ -72,8 +74,8 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody @Validated final User user) {
+    /*@PostMapping("/register")
+    public ResponseEntity<?> registerUser(@Validated @RequestBody final User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userService.createUser(user);
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(user.getUsername());
@@ -84,7 +86,7 @@ public class AuthenticationController {
         responseMap.put("message", "Account created successfully.");
         responseMap.put("token", token);
         return ResponseEntity.ok(responseMap);
-    }
+    }*/
 
     @GetMapping("/username")
     public Map<String, Object> getUserName() {

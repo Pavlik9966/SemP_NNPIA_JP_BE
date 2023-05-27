@@ -55,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     response.getWriter().write(responseMsg);
                 })
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .and().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors();
     }
 }

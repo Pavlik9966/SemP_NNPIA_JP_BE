@@ -1,53 +1,64 @@
 --changeset db-data:1
-/*CREATE TABLE user
+CREATE TABLE states
 (
-    id            BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (INCREMENT BY 1 START WITH 0),
-    username      VARCHAR(256) NOT NULL UNIQUE,
-    password      VARCHAR(256) NOT NULL,
-    creation_date TIMESTAMPTZ  NOT NULL
+    state_id       SERIAL PRIMARY KEY,
+    state_name     VARCHAR(50) UNIQUE NOT NULL,
+    state_shortcut VARCHAR(8) UNIQUE  NOT NULL
 );
 
-CREATE TABLE role
+CREATE TABLE addresses
 (
-    id   BIGINT PRIMARY KEY,
-    name VARCHAR(256) NOT NULL
+    address_id     SERIAL PRIMARY KEY,
+    street_address VARCHAR(200) NOT NULL,
+    city           VARCHAR(100) NOT NULL,
+    zip_code       VARCHAR(20)  NOT NULL,
+    state_id       INTEGER      NOT NULL REFERENCES states (state_id)
 );
 
-CREATE TABLE user_role
+CREATE TABLE users
 (
-    user_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
-    PRIMARY KEY (app_user_id, role_id)
+    user_id       SERIAL PRIMARY KEY,
+    username      VARCHAR(256) UNIQUE NOT NULL,
+    password      VARCHAR(256)        NOT NULL,
+    name          VARCHAR(256)        NOT NULL,
+    surname       VARCHAR(256)        NOT NULL,
+    date_of_birth DATE                NOT NULL,
+    phone         VARCHAR(20)         NOT NULL,
+    email         VARCHAR(100)        NOT NULL,
+    address_id    INTEGER             NOT NULL REFERENCES addresses (address_id),
+    created_at    TIMESTAMP           NOT NULL DEFAULT NOW()
 );
 
-ALTER TABLE user_role
-    ADD CONSTRAINT user_role_user_id_fk FOREIGN KEY (user_id)
-        REFERENCES user (id) ON DELETE CASCADE;
+CREATE TABLE roles
+(
+    role_id SERIAL PRIMARY KEY,
+    name    VARCHAR(50) UNIQUE NOT NULL
+);
 
-ALTER TABLE user_role
-    ADD CONSTRAINT user_role_role_id_fk FOREIGN KEY (role_id)
-        REFERENCES role (id) ON DELETE CASCADE;
+CREATE TABLE user_roles
+(
+    user_id INTEGER NOT NULL REFERENCES users (user_id),
+    role_id INTEGER NOT NULL REFERENCES roles (role_id),
+    PRIMARY KEY (user_id, role_id)
+);
 
-ALTER TABLE user_role DROP CONSTRAINT user_role_user_id_fk;
+CREATE TABLE bank_accounts
+(
+    account_id     SERIAL PRIMARY KEY,
+    user_id        INTEGER            NOT NULL REFERENCES users (user_id),
+    account_number VARCHAR(50) UNIQUE NOT NULL,
+    balance        REAL               NOT NULL DEFAULT 0,
+    created_at     TIMESTAMP          NOT NULL DEFAULT NOW()
+);
 
-ALTER TABLE user_role DROP CONSTRAINT user_role_role_id_fk;
-
-INSERT INTO user (username, password, creation_date)
-VALUES ('john_doe', 'password123', NOW());
-
-INSERT INTO user (username, password, creation_date)
-VALUES ('jane_doe', 'qwerty123', NOW());
-
-INSERT INTO role (name)
-VALUES ('Admin');
-
-INSERT INTO role (name)
-VALUES ('Guest');
-
--- Assign "Admin" role to user with id = 1
-INSERT INTO user_role (user_id, role_id)
-VALUES (1, 1);
-
--- Assign "Guest" role to user with id = 2
-INSERT INTO user_role (user_id, role_id)
-VALUES (2, 2);*/
+CREATE TABLE transactions
+(
+    transaction_id       SERIAL PRIMARY KEY,
+    user_id              INTEGER      NOT NULL REFERENCES users (user_id),
+    account_id_recipient INTEGER      NOT NULL REFERENCES bank_accounts (account_id),
+    account_id_sender    INTEGER      NOT NULL REFERENCES bank_accounts (account_id),
+    transaction_date     TIMESTAMP    NOT NULL DEFAULT NOW(),
+    amount               REAL         NOT NULL DEFAULT 0,
+    created_at           TIMESTAMP    NOT NULL DEFAULT NOW(),
+    description          VARCHAR(256) NOT NULL
+);

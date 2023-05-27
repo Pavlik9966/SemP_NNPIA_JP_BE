@@ -2,6 +2,7 @@ package semp.nnpia.be.domains;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import semp.nnpia.be.dtos.StateOutputDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -30,14 +31,10 @@ public class State {
     @Size(max = 8)
     private String shortcut;
 
-    public State(Long id, String name, String shortcut) {
-        this.id = id;
-        this.name = name;
-        this.shortcut = shortcut;
-    }
-
-    public State(String name, String shortcut) {
-        this.name = name;
-        this.shortcut = shortcut;
+    public StateOutputDto toDto() {
+        return new StateOutputDto(
+                getName(),
+                getShortcut()
+        );
     }
 }

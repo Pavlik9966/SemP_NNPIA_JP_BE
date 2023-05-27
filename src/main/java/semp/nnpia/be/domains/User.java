@@ -2,6 +2,8 @@ package semp.nnpia.be.domains;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import semp.nnpia.be.dtos.TransactionUserOutputDto;
+import semp.nnpia.be.dtos.UserOutputDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -63,7 +65,7 @@ public class User {
     private String email;
 
     @JoinColumn(name = "address_id", referencedColumnName = "address_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Address address;
 
     @Column(name = "created_at")
@@ -73,26 +75,24 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private Set<Role> roles = new HashSet<>();
 
-    public User(Long id, String username, String password, String name, String surname, LocalDate dateOfBirth, String phone, String email, LocalDateTime createdAt) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.dateOfBirth = dateOfBirth;
-        this.phone = phone;
-        this.email = email;
-        this.createdAt = createdAt;
+    public UserOutputDto toUserOutputDto() {
+        return new UserOutputDto(
+                getId(),
+                getUsername(),
+                getName(),
+                getSurname(),
+                getDateOfBirth(),
+                getPhone(),
+                getEmail(),
+                getAddress().toDto(),
+                getCreatedAt()
+        );
     }
 
-    public User(String username, String password, String name, String surname, LocalDate dateOfBirth, String phone, String email, LocalDateTime createdAt) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.dateOfBirth = dateOfBirth;
-        this.phone = phone;
-        this.email = email;
-        this.createdAt = createdAt;
+    public TransactionUserOutputDto toTransactionUserOutputDto() {
+        return new TransactionUserOutputDto(
+                getName(),
+                getSurname()
+        );
     }
 }

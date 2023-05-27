@@ -2,6 +2,7 @@ package semp.nnpia.be.domains;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import semp.nnpia.be.dtos.AddressOutputDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -37,19 +38,15 @@ public class Address {
     private String zipCode;
 
     @JoinColumn(name = "state_id", referencedColumnName = "state_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private State state;
 
-    public Address(Long id, String streetAddress, String city, String zipCode) {
-        this.id = id;
-        this.streetAddress = streetAddress;
-        this.city = city;
-        this.zipCode = zipCode;
-    }
-
-    public Address(String streetAddress, String city, String zipCode) {
-        this.streetAddress = streetAddress;
-        this.city = city;
-        this.zipCode = zipCode;
+    public AddressOutputDto toDto() {
+        return new AddressOutputDto(
+                getStreetAddress(),
+                getCity(),
+                getZipCode(),
+                getState().toDto()
+        );
     }
 }
