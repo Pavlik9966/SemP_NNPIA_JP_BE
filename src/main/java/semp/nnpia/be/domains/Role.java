@@ -29,13 +29,4 @@ public class Role {
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     @ManyToMany(cascade = {CascadeType.ALL})
     private Set<User> users = new HashSet<>();
-
-    public Role(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Role(String name) {
-        this.name = name;
-    }
 }

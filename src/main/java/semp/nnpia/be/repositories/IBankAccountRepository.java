@@ -5,6 +5,8 @@ import semp.nnpia.be.domains.BankAccount;
 
 import java.util.List;
 
-public interface IBankAccount extends JpaRepository<BankAccount, Long> {
+public interface IBankAccountRepository extends JpaRepository<BankAccount, Long> {
     List<BankAccount> findBankAccountsByUserId(Long id);
+
+    BankAccount findBankAccountByAccountNumber(String accountNumber);
 }
