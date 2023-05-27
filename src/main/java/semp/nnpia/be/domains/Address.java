@@ -41,6 +41,13 @@ public class Address {
     @ManyToOne(fetch = FetchType.EAGER)
     private State state;
 
+    public Address(String streetAddress, String city, String zipCode, State state) {
+        this.streetAddress = streetAddress;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.state = state;
+    }
+
     public AddressOutputDto toDto() {
         return new AddressOutputDto(
                 getStreetAddress(),
