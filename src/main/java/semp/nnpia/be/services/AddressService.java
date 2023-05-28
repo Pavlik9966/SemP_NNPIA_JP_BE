@@ -23,4 +23,13 @@ public class AddressService {
 
         return result.get();
     }
+
+    public Address getExactMatchAddress(final Address address) {
+        return addressRepository.findAddressByStreetAddressAndCityAndZipCodeAndState(
+                address.getStreetAddress(),
+                address.getCity(),
+                address.getZipCode(),
+                address.getState()
+        );
+    }
 }

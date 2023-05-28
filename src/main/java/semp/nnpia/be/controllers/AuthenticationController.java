@@ -14,10 +14,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import semp.nnpia.be.domains.Address;
+import semp.nnpia.be.domains.State;
 import semp.nnpia.be.domains.User;
-import semp.nnpia.be.services.JwtUserDetailsService;
-import semp.nnpia.be.services.UserService;
+import semp.nnpia.be.dtos.AddressInputDto;
+import semp.nnpia.be.dtos.UserInputDto;
+import semp.nnpia.be.services.*;
 import semp.nnpia.be.utils.JwtTokenUtil;
+import semp.nnpia.be.utils.StateUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +30,10 @@ import java.util.Map;
 @RestController
 public class AuthenticationController {
     protected final Log logger = LogFactory.getLog(getClass());
+    @Autowired
+    AddressService addressService;
+    @Autowired
+    StateService stateService;
     @Autowired
     UserService userService;
     @Autowired
@@ -74,8 +82,35 @@ public class AuthenticationController {
         }
     }
 
-    /*@PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Validated @RequestBody final User user) {
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@Validated @RequestBody final UserInputDto dto) throws ResourceNotFoundException {
+        User existingUser = userService.getUserByUsername(dto.getUsername());
+
+        if (existingUser != null) {
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("error", true);
+            responseMap.put("message", "User already exists.");
+            return ResponseEntity.status(409).body(responseMap);
+        }
+
+        var user = toEntity(dto);
+
+        State existingState = stateService.getStateByShortcut(user.getAddress().getState().getShortcut());
+
+        if (existingState == null) {
+            stateService.createState(user.getAddress().getState());
+        } else {
+            user.getAddress().setState(existingState);
+        }
+
+        Address existingAddress = addressService.getExactMatchAddress(user.getAddress());
+
+        if (existingAddress == null) {
+            addressService.createAddress(user.getAddress());
+        } else {
+            user.setAddress(existingAddress);
+        }
+
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userService.createUser(user);
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(user.getUsername());
@@ -86,7 +121,7 @@ public class AuthenticationController {
         responseMap.put("message", "Account created successfully.");
         responseMap.put("token", token);
         return ResponseEntity.ok(responseMap);
-    }*/
+    }
 
     @GetMapping("/username")
     public Map<String, Object> getUserName() {
@@ -103,5 +138,35 @@ public class AuthenticationController {
         responseMap.put("original", password);
         responseMap.put("password", new BCryptPasswordEncoder().encode(password));
         return ResponseEntity.ok(responseMap);
+    }
+
+    private User toEntity(final UserInputDto dto) {
+        return new User(
+                dto.getUsername(),
+                dto.getPassword(),
+                dto.getName(),
+                dto.getSurname(),
+                dto.getDateOfBirth(),
+                dto.getPhone(),
+                dto.getEmail(),
+                toEntity(dto.getAddress()),
+                dto.getCreatedAt()
+        );
+    }
+
+    private Address toEntity(final AddressInputDto dto) {
+        return new Address(
+                dto.getStreetAddress(),
+                dto.getCity(),
+                dto.getZipCode(),
+                toEntity(dto.getState())
+        );
+    }
+
+    private State toEntity(final String state) {
+        return new State(
+                state,
+                StateUtils.getStateShortcut(state)
+        );
     }
 }
