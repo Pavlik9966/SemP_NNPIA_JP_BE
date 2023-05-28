@@ -23,4 +23,8 @@ public class StateService {
 
         return result.get();
     }
+
+    public State getStateByShortcut(final String shortcut) {
+        return stateRepository.findStateByShortcut(shortcut);
+    }
 }
