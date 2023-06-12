@@ -16,6 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -23,9 +25,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private JwtUserDetailsService jwtUserDetailsService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+    private static final List<String> NON_SECURED_ENDPOINTS = Arrays.asList(
+            "/auth/login",
+            "/auth/register"
+    );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        if (isNonSecuredEndpoint(request.getRequestURI())) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         final String requestTokenHeader = request.getHeader("Authorization");
         if (StringUtils.startsWith(requestTokenHeader, "Bearer ")) {
             String jwtToken = requestTokenHeader.substring(7);
@@ -56,5 +67,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             logger.warn("JWT Token does not begin with Bearer String.");
         }
         chain.doFilter(request, response);
+    }
+
+    private boolean isNonSecuredEndpoint(String requestURI) {
+        return NON_SECURED_ENDPOINTS.stream()
+                .anyMatch(requestURI::startsWith);
     }
 }
