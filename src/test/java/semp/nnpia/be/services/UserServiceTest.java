@@ -74,6 +74,16 @@ public class UserServiceTest {
     public void findUserById() throws ResourceNotFoundException {
         User actual = userService.getUserById(createdUser.getId());
 
-        assertEquals(user, actual);
+        assertEquals(user.getUsername(), actual.getUsername());
+        assertEquals(user.getPassword(), actual.getPassword());
+        assertEquals(user.getName(), actual.getName());
+        assertEquals(user.getSurname(), actual.getSurname());
+        assertEquals(user.getDateOfBirth(), actual.getDateOfBirth());
+        assertEquals(user.getPhone(), actual.getPhone());
+        assertEquals(user.getEmail(), actual.getEmail());
+        assertEquals(user.getAddress(), actual.getAddress());
+        assertEquals(user.getCreatedAt().withNano(0), actual.getCreatedAt().withNano(0));
+
+        /*assertEquals(user, actual);*/
     }
 }

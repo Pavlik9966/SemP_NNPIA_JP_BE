@@ -72,7 +72,7 @@ public class User {
     @NotNull
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
     public User(String username, String password, String name, String surname, LocalDate dateOfBirth, String phone, String email, Address address, LocalDateTime createdAt) {
